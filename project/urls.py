@@ -22,6 +22,7 @@ from dj_rest_auth.views import PasswordResetView, PasswordResetConfirmView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('User.urls')),
+    path('api/', include('FayTourApp.urls')),
 
     path('password-reset/', PasswordResetView.as_view()),
     path('password-reset-confirm/<uidb64>/<token>/',
