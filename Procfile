@@ -1,1 +1,1 @@
-web: gunicorn repotersprj.wsgi --log-file -
+web: gunicorn project.wsgi --log-file -
