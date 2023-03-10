@@ -1,3 +1,4 @@
+from User.serializers import UserSerializer
 from rest_framework import serializers
 from .models import *
 
@@ -20,10 +21,11 @@ class TouristPlacesSerializer(serializers.ModelSerializer):
     )
 
     rate_one_by_one = serializers.SerializerMethodField('rate_one_by_one_func')
+    created_by = serializers.SerializerMethodField('touristPlaces_created_by')
     class Meta:
         model = TouristPlaces
         fields = ['id','name','type','address','description','coordinatesX','coordinatesY','originalImage',
-                  'uploaded_images','video','images','no_of_ratings','avg_ratings','rate_one_by_one']
+                  'uploaded_images','video','images','no_of_ratings','avg_ratings','rate_one_by_one','user','created_by']
 
     def create(self, validated_data):
         uploaded_images = validated_data.pop("uploaded_images")
@@ -36,7 +38,6 @@ class TouristPlacesSerializer(serializers.ModelSerializer):
     def rate_one_by_one_func(request,self):
         ratings = RateTouristPlaces.objects.filter(touristPlaces=self)
         length = len(ratings)
-        print("length", length)
         star1 = RateTouristPlaces.objects.filter(touristPlaces=self,stars=1).count()
         star2 = RateTouristPlaces.objects.filter(touristPlaces=self,stars=2).count()
         star3 = RateTouristPlaces.objects.filter(touristPlaces=self,stars=3).count()
@@ -50,6 +51,16 @@ class TouristPlacesSerializer(serializers.ModelSerializer):
 
         return list_of_rate
     
+    def touristPlaces_created_by(request,self):
+        json = {
+            "id":self.user.id,
+            "userName":self.user.username,
+            "email":self.user.email
+            }
+        print(json)
+        return json
+
+
 class HotelSerializer(serializers.ModelSerializer):
     images = HotelImagesSerializer(many=True,read_only=True)
     uploaded_images = serializers.ListField(
@@ -58,12 +69,14 @@ class HotelSerializer(serializers.ModelSerializer):
     )
 
     rate_one_by_one = serializers.SerializerMethodField('rate_one_by_one_func')
+    created_by = serializers.SerializerMethodField('hotel_created_by')
+    # x= UserSerializer(read_only=True, many=True)
 
     class Meta:
         model = Hotel
         fields = ['id','name','description','address','City','Phone','web','email',
                   'Single','Double','Triple','Sweet','chalet','villa','totalRooms','TotalBeds',
-                  'no_of_ratings','avg_ratings','rate_one_by_one','images','originalImage','uploaded_images'
+                  'no_of_ratings','avg_ratings','rate_one_by_one','images','originalImage','uploaded_images','user','created_by'
                 ]
     
     def create(self, validated_data):
@@ -71,13 +84,13 @@ class HotelSerializer(serializers.ModelSerializer):
         hotel = Hotel.objects.create(**validated_data)
         
         for image in uploaded_images:
-            newproduct_image = HotelsImages.objects.create(hotel=hotel, image=image)
+            newproduct_image = HotelsImages.objects.create(hotel=hotel, image=image).image
+            # print("newimage: ",newproduct_image)
         return hotel
 
     def rate_one_by_one_func(request,self):
         ratings = RateHotel.objects.filter(hotel=self)
         length = len(ratings)
-        print("length", length)
         star1 = RateHotel.objects.filter(hotel=self,stars=1).count()
         star2 = RateHotel.objects.filter(hotel=self,stars=2).count()
         star3 = RateHotel.objects.filter(hotel=self,stars=3).count()
@@ -89,6 +102,14 @@ class HotelSerializer(serializers.ModelSerializer):
             
         else: list_of_rate = {"1":0,"2":0,"3":0,"4":0,"5":0}
         return list_of_rate
+
+    def hotel_created_by(request,self):
+        json = {
+            "id":self.user.id,
+            "userName":self.user.username,
+            "email":self.user.email
+            }
+        return json
 
 class RateTouristPlacesSerializer(serializers.ModelSerializer):
     class Meta:
