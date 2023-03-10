@@ -3,3 +3,4 @@ djangorestframework-simplejwt
 django-allauth
 django-rest-auth
 dj-rest-auth
+gunicorn
