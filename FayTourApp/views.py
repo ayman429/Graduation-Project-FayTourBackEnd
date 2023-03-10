@@ -71,6 +71,7 @@ class viewHotel(viewsets.ModelViewSet):
 
     queryset = Hotel.objects.all()
     serializer_class = HotelSerializer
+     
 
     @action(detail=True, methods=['post'])
     def rate_Hotel(self, request, pk=None):
@@ -115,7 +116,10 @@ class viewHotel(viewsets.ModelViewSet):
             serializer = HotelSerializer(hotels_by_rateNamber)
             json2.append(serializer.data)
         return Response(json2) # , status=status.HTTP_200_OK
-
+   
+    # def get_serializer_class(self):
+    #     return HotelSerializer
+    
 class viewRateTouristPlaces(viewsets.ModelViewSet):
     queryset = RateTouristPlaces.objects.all()
     serializer_class = RateTouristPlacesSerializer

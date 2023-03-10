@@ -1,8 +1,9 @@
 from django.db import models
-from User.models import CustomUser
 from django.core.validators import MinValueValidator,MaxValueValidator
 from django.db.models import Avg
 from django.core.validators import FileExtensionValidator
+
+from User.models import CustomUser
 # Create your models here.
 
 class TouristPlaces(models.Model):
@@ -14,6 +15,7 @@ class TouristPlaces(models.Model):
     address = models.CharField(max_length=100)
     originalImage = models.ImageField(upload_to='image')
     video = models.FileField(upload_to='video',validators=[FileExtensionValidator(allowed_extensions=["mp4"])])
+    user = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
 
     class Meta:
        unique_together = ("coordinatesX", "coordinatesY")
@@ -46,7 +48,7 @@ class Hotel(models.Model):
     Sweet  = models.IntegerField(default=0)  
     chalet = models.IntegerField(default=0)  
     villa  = models.IntegerField(default=0)  
-
+    user = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     def no_of_ratings(self):
         ratings = RateHotel.objects.filter(hotel=self)
         return len(ratings)
