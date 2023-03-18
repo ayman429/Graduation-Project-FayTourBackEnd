@@ -176,5 +176,5 @@ LOGIN_URL = 'http://localhost:8000/rest-auth/login/'   # http://localhost:8000/r
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 # EMAIL_HOST_USER = 'FayTourApp@gmail.com'
-# EMAIL_HOST_PASSWORD = 'pguemmkdnznourlz'  # fayoum tour 2023
+# EMAIL_HOST_PASSWORD = 'pguemmkdnznourlz'  
 EMAIL_PORT = 587
